@@ -33,7 +33,7 @@ export default function App() {
         Go to SignUp
       </Link>
       <Link
-        href="/(tabs)/subscriptions/spotify"
+        href="/subscriptions/spotify"
         className="mt-4 p-4 rounded-2xl bg-primary text-white"
       >
         {" "}
