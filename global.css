@@ -46,7 +46,7 @@
 }
 
 @layer components {
-  .tabs-icon {
+  .tabs-icons {
     @apply size-12 items-center justify-center;
   }
 
