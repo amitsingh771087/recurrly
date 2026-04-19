@@ -14,7 +14,10 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontsLoaded) {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+
+  useEffect(() => {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
