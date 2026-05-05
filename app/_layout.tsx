@@ -1,9 +1,17 @@
 import "@/global.css";
+import { ClerkProvider, useAuth } from '@clerk/expo';
+import { tokenCache } from '@clerk/expo/token-cache';
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { Redirect, SplashScreen, Stack, useSegments } from "expo-router";
 import { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
+
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+
+if (!publishableKey) {
+  throw new Error('Add your Clerk Publishable Key to the .env file')
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -24,10 +32,30 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <AppGate />
+    </ClerkProvider>
+  );
+}
+
+function AppGate() {
+  const { isSignedIn, isLoaded } = useAuth()
+  const segments = useSegments()
+  const isAuthRoute = segments[0] === '(auth)'
+
+  if (!isLoaded) {
+    return null
+  }
+
+  if (isSignedIn && isAuthRoute) {
+    return <Redirect href="/" />
+  }
+
+  return (
     <Stack
       screenOptions={{
         headerShown: false,
       }}
     />
-  );
+  )
 }
