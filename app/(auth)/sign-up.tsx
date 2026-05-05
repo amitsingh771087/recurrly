@@ -27,6 +27,7 @@ export default function SignUpScreen() {
   const [flowError, setFlowError] = useState<string | null>(null)
 
   const verificationRequired =
+    !!signUp &&
     signUp.status === 'missing_requirements' &&
     signUp.unverifiedFields.includes('email_address') &&
     signUp.missingFields.length === 0
@@ -36,12 +37,12 @@ export default function SignUpScreen() {
   const codeError = getCodeError(code)
   const canSubmit = !emailError && !passwordError
   const isSubmitting = fetchStatus === 'fetching'
-  const serverEmailError = errors.fields.emailAddress?.message ?? null
-  const serverPasswordError = errors.fields.password?.message ?? null
-  const serverCodeError = errors.fields.code?.message ?? null
+  const serverEmailError = errors?.fields.emailAddress?.message ?? null
+  const serverPasswordError = errors?.fields.password?.message ?? null
+  const serverCodeError = errors?.fields.code?.message ?? null
 
   useEffect(() => {
-    if (!verificationRequired || verificationCodeRequested) {
+    if (!signUp || !verificationRequired || verificationCodeRequested) {
       return
     }
 
@@ -58,6 +59,10 @@ export default function SignUpScreen() {
 
     void sendVerificationCode()
   }, [signUp, verificationCodeRequested, verificationRequired])
+
+  if (!signUp) {
+    return null
+  }
 
   const finalizeSignUp = async () => {
     await signUp.finalize({

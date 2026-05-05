@@ -22,6 +22,8 @@ const SubscriptionCard = ({
   paymentMethod,
   startDate,
   status,
+  onCancelPress,
+  isCancelling,
 }: SubscriptionCardProps) => {
   return (
     <Pressable
@@ -115,6 +117,17 @@ const SubscriptionCard = ({
               </View>
             </View>
           </View>
+          {status !== "cancelled" && onCancelPress ? (
+            <Pressable
+              className="sub-cancel"
+              onPress={onCancelPress}
+              disabled={isCancelling}
+            >
+              <Text className="sub-cancel-text">
+                {isCancelling ? "Cancelling..." : "Mark as cancelled"}
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
       )}
     </Pressable>

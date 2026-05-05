@@ -1,4 +1,5 @@
 import type { Href } from 'expo-router'
+import { Linking } from 'react-native'
 
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export const AUTH_PASSWORD_MIN_LENGTH = 8
@@ -75,7 +76,10 @@ export const navigateToUrl = (router: RouterLike, url: string) => {
   if (url.startsWith('http')) {
     if (typeof window !== 'undefined' && window.location) {
       window.location.replace(url)
+      return
     }
+
+    void Linking.openURL(url)
     return
   }
 
