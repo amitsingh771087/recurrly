@@ -1,16 +1,17 @@
 import "@/global.css";
-import { ClerkProvider, useAuth } from '@clerk/expo';
-import { tokenCache } from '@clerk/expo/token-cache';
+import { ClerkProvider, useAuth } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { Redirect, SplashScreen, Stack, useSegments } from "expo-router";
+import { PostHogProvider } from "posthog-react-native";
 import { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
 
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
 if (!publishableKey) {
-  throw new Error('Add your Clerk Publishable Key to the .env file')
+  throw new Error("Add your Clerk Publishable Key to the .env file");
 }
 
 export default function RootLayout() {
@@ -39,23 +40,30 @@ export default function RootLayout() {
 }
 
 function AppGate() {
-  const { isSignedIn, isLoaded } = useAuth()
-  const segments = useSegments()
-  const isAuthRoute = segments[0] === '(auth)'
+  const { isSignedIn, isLoaded } = useAuth();
+  const segments = useSegments();
+  const isAuthRoute = segments[0] === "(auth)";
 
   if (!isLoaded) {
-    return null
+    return null;
   }
 
   if (isSignedIn && isAuthRoute) {
-    return <Redirect href="/" />
+    return <Redirect href="/" />;
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
+    <PostHogProvider
+      apiKey="phc_obEpW7wQjNzzfm7bnUUhyYrcRZe4ZFofyxtYcupcE4ET"
+      options={{
+        host: "https://us.i.posthog.com",
       }}
-    />
-  )
+    >
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </PostHogProvider>
+  );
 }
